@@ -4,6 +4,7 @@ class Graph:
 
     def add_edge(self,i,j,weight):
         self.graph[i][j]=weight
+        # self.graph[j][i]=weight # uncomment if you want the graph to be undirected
 
     def __str__(self):
         a = ""
@@ -11,6 +12,7 @@ class Graph:
             a += f"{i}\n"
         return a
 
+# directed graph
 g = Graph(4)
 g.add_edge(0,1,5)
 g.add_edge(0,2,3)
