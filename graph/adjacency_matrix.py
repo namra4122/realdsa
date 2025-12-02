@@ -1,10 +1,19 @@
 class Graph:
-    def __init__(self, nodes):
-        self.graph = [ [0]*nodes for _ in range(nodes)]
+    def __init__(self, nodes, is_directed):
+        self.nodes = nodes
+        self.graph = [ [0]*self.nodes for _ in range(self.nodes)]
+        self.is_directed = is_directed
 
     def add_edge(self,i,j,weight):
         self.graph[i][j]=weight
-        # self.graph[j][i]=weight # uncomment if you want the graph to be undirected
+        if not self.is_directed:
+            self.graph[j][i]=weight
+
+    def add_node(self):
+        self.nodes += 1
+        for i in self.graph:
+            i.append(0)
+        self.graph.append([0]*self.nodes)
 
     def __str__(self):
         a = ""
@@ -13,15 +22,19 @@ class Graph:
         return a
 
 # directed graph
-g = Graph(4)
+g = Graph(nodes=4, is_directed=True)
 g.add_edge(0,1,5)
 g.add_edge(0,2,3)
+print(g)
+g.add_node()
 g.add_edge(1,2,2)
 g.add_edge(2,0,1)
 g.add_edge(2,3,4)
 g.add_edge(3,3,7)
-
+g.add_edge(0,4,4)
 print(g)
+
+
 
 # v = 4
 # edge = [[0,1,5],[0,2,3],[1,2,2],[2,0,1],[2,3,4],[3,3,7]] # edge List
