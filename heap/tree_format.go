@@ -23,6 +23,10 @@ func NewTreeHeap() *TreeHeap {
 }
 
 func (n *TreeNode) bubbleUp() {
+	if n == nil {
+		return
+	}
+
 	for n.parent != nil && n.data > n.parent.data {
 		n.data, n.parent.data = n.parent.data, n.data
 		n = n.parent
@@ -78,6 +82,10 @@ func (h *TreeHeap) getLastNode() *TreeNode {
 }
 
 func detachNode(node *TreeNode) {
+	if node.parent == nil {
+		return
+	}
+
 	parent := node.parent
 
 	if parent.left == node {
@@ -89,7 +97,11 @@ func detachNode(node *TreeNode) {
 	node.parent = nil
 }
 
-func bubbleDown(node *TreeNode) {
+func treeBubbleDown(node *TreeNode) {
+	if node == nil {
+		return
+	}
+
 	for node.left != nil || node.right != nil {
 		temp := node
 
@@ -107,6 +119,32 @@ func bubbleDown(node *TreeNode) {
 		node.data, temp.data = temp.data, node.data
 		node = temp
 	}
+}
+
+func _count_nodes(node *TreeNode) int {
+	if node == nil {
+		return 0
+	}
+
+	return 1 + _count_nodes(node.left) + _count_nodes(node.right)
+}
+
+func _heapify_recursive(node *TreeNode) {
+	if node == nil {
+		return
+	}
+
+	_heapify_recursive(node.left)
+	_heapify_recursive(node.right)
+
+	treeBubbleDown(node)
+}
+
+func (h *TreeHeap) Heapify(node *TreeNode) {
+	h.root = node
+	h.size = _count_nodes(node)
+
+	_heapify_recursive(node)
 }
 
 func (h *TreeHeap) Delete() (int, error) {
@@ -128,13 +166,14 @@ func (h *TreeHeap) Delete() (int, error) {
 	detachNode(lastNode)
 	h.size -= 1
 
-	bubbleDown(h.root)
+	treeBubbleDown(h.root)
 	return removedNode, nil
 }
 
 func (h *TreeHeap) String() {
 	if h.root == nil {
 		fmt.Println("Empty Heap")
+		return
 	}
 
 	q := []*TreeNode{h.root}
@@ -165,31 +204,62 @@ func (h *TreeHeap) String() {
 }
 
 func main() {
-	h := NewTreeHeap()
-	h.Insert(10)
-	h.Insert(6)
-	h.Insert(5)
-	h.Insert(15)
-	h.Insert(7)
-	h.Insert(4)
-	h.Insert(10)
-	h.Insert(1)
-	h.Insert(0)
-	h.String()
-	del_el, err := h.Delete()
-	if err != nil {
-		panic(err)
-	}
-	fmt.Printf("Deleted item: %d\n", del_el)
-	del_el_2, err := h.Delete()
-	if err != nil {
-		panic(err)
-	}
-	fmt.Printf("Deleted item: %d\n", del_el_2)
-	del_el_3, err := h.Delete()
-	if err != nil {
-		panic(err)
-	}
-	fmt.Printf("Deleted item: %d\n", del_el_3)
-	h.String()
+	// h := NewTreeHeap()
+	// h.Insert(10)
+	// h.Insert(6)
+	// h.Insert(5)
+	// h.Insert(15)
+	// h.Insert(7)
+	// h.Insert(4)
+	// h.Insert(10)
+	// h.Insert(1)
+	// h.Insert(0)
+	// h.String()
+	// del_el, err := h.Delete()
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// fmt.Printf("Deleted item: %d\n", del_el)
+	// del_el_2, err := h.Delete()
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// fmt.Printf("Deleted item: %d\n", del_el_2)
+	// del_el_3, err := h.Delete()
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// fmt.Printf("Deleted item: %d\n", del_el_3)
+	// h.String()
+
+	h1 := NewTreeHeap()
+	t := TreeNode{1, nil, nil, nil}
+	t1 := TreeNode{2, nil, nil, nil}
+	t2 := TreeNode{3, nil, nil, nil}
+	t3 := TreeNode{4, nil, nil, nil}
+	// t4 := TreeNode{5, nil, nil, nil}
+	// t5 := TreeNode{6, nil, nil, nil}
+	// t6 := TreeNode{7, nil, nil, nil}
+
+	t.right = &t1
+	t.left = &t2
+	t1.parent = &t
+	t2.parent = &t
+
+	t2.left = &t3
+	t3.parent = &t2
+	// t1.right = &t3
+	// t1.left = &t4
+	// t3.parent = &t1
+	//t4.parent = &t1
+
+	//t2.right = &t5
+	//t2.left = &t6
+	//t5.parent = &t2
+	//t6.parent = &t2
+
+	h1.Heapify(&t)
+	h1.String()
+	h1.Insert(5)
+	h1.String()
 }

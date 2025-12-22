@@ -3,8 +3,21 @@ class Heap:
     def __init__(self):
         self.data = []
 
+    def heapify_nlongn(self, data: list[int]):
+        for i in data:
+            self.insert(i)
+
+    def heapify(self, data: list[int]):
+        self.data = data
+        size = len(self.data)
+        for i in range(size // 2 - 1, -1, -1):
+            self.bubbleDown(i, size)
+
     def bubbleUp(self, idx: int):
-        parent_idx = int((idx - 1) / 2)
+        if idx == 0:
+            return idx
+
+        parent_idx = (idx - 1) // 2
 
         if self.data[parent_idx] >= self.data[idx]:
             return idx
@@ -22,17 +35,7 @@ class Heap:
                 break
             idx = new_idx
 
-    def delete(self):
-        if len(self.data) == 0:
-            return None
-
-        root = self.data[0]
-        size = len(self.data)
-        self.data[0] = self.data[size - 1]
-        self.data = self.data[: size - 1]
-
-        idx = 0
-
+    def bubbleDown(self, idx: int, size: int):
         while True:
             l = 2 * idx + 1
             r = 2 * idx + 2
@@ -46,11 +49,21 @@ class Heap:
 
             if lg == idx:
                 break
-            
+
             self.data[idx], self.data[lg] = self.data[lg], self.data[idx]
             idx = lg
-            size = len(self.data)
 
+    def delete(self):
+        if len(self.data) == 0:
+            return None
+
+        root = self.data[0]
+        size = len(self.data)
+        self.data[0] = self.data[size - 1]
+        self.data = self.data[: size - 1]
+
+        idx = 0
+        self.bubbleDown(idx, len(self.data))
         return root
 
     def __str__(self):
@@ -75,3 +88,8 @@ print(f"Deleted item: {del_el}")
 del_el = h.delete()
 print(f"Deleted item: {del_el}")
 print(f"[{h}]")
+
+h1 = Heap()
+d = [10, 6, 5, 15, 7, 4, 10, 1, 0]
+h1.heapify(d)
+print(f"[{h1}]")

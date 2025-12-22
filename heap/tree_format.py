@@ -1,6 +1,7 @@
 # Note: THIS IS MAX-HEAP IF WANT MIN-HEAP CHANGE THE COMPARISION SIGN
 from collections import deque
 
+
 class TreeNode:
     def __init__(self, data: int):
         self.data = data
@@ -15,6 +16,9 @@ class Heap:
         self.size = 0
 
     def bubbleUp(self, node: TreeNode | None):
+        if node is None:
+            return
+
         while node.parent and node.data > node.parent.data:
             node.data, node.parent.data = node.parent.data, node.data
             node = node.parent
@@ -58,6 +62,9 @@ class Heap:
         return curr
 
     def detachNode(self, node: TreeNode | None):
+        if node.parent is None:
+            return
+
         parent = node.parent
 
         if parent.left == node:
@@ -102,6 +109,27 @@ class Heap:
         self.bubbleDown(self.root)
         return removedNode
 
+    def _count_nodes(self, node: TreeNode):
+        if node is None:
+            return 0
+
+        return 1 + self._count_nodes(node.left) + self._count_nodes(node.right)
+
+    def _heapify_recursive(self, node):
+        if node is None:
+            return
+
+        self._heapify_recursive(node.left)
+        self._heapify_recursive(node.right)
+
+        self.bubbleDown(node)
+
+    def heapify(self, node: TreeNode):
+        self.root = node
+        self.size = self._count_nodes(node)
+
+        self._heapify_recursive(node)
+
     def __str__(self):
         if not self.root:
             return "Empty Heap"
@@ -127,21 +155,62 @@ class Heap:
         return "\n".join(result)
 
 
+# h = Heap()
+# h.insert(10)
+# h.insert(6)
+# h.insert(5)
+# h.insert(15)
+# h.insert(7)
+# h.insert(4)
+# h.insert(10)
+# h.insert(1)
+# h.insert(0)
+# print(h)
+# del_el = h.delete()
+# print(f"Deleted item: {del_el}")
+# del_el = h.delete()
+# print(f"Deleted item: {del_el}")
+# del_el = h.delete()
+# print(f"Deleted item: {del_el}")
+# print(h)
+
+
+# h1 = Heap()
+# t = TreeNode(1)
+# t1 = TreeNode(2)
+# t2 = TreeNode(3)
+# t3 = TreeNode(4)
+# t4 = TreeNode(5)
+# t5 = TreeNode(6)
+# t6 = TreeNode(7)
+#
+# t.right = t1
+# t.left = t2
+# t1.parent = t
+# t2.parent = t
+#
+# t1.right = t3
+# t1.left = t4
+# t3.parent = t1
+# t4.parent = t1
+#
+# t2.right = t5
+# t2.left = t6
+# t5.parent = t2
+# t6.parent = t2
+#
+# h1.heapify(t)
+# h1.root = t
+# print(h1)
+
+
 h = Heap()
-h.insert(10)
-h.insert(6)
-h.insert(5)
-h.insert(15)
-h.insert(7)
-h.insert(4)
-h.insert(10)
 h.insert(1)
-h.insert(0)
+h.insert(2)
+h.insert(3)
+h.insert(4)
+h.insert(5)
 print(h)
-del_el = h.delete()
-print(f"Deleted item: {del_el}")
-del_el = h.delete()
-print(f"Deleted item: {del_el}")
-del_el = h.delete()
-print(f"Deleted item: {del_el}")
-print(h)
+print(f"Size: {h.size}")  # Should be 5
+print(f"Deleted: {h.delete()}")  # Should be 5
+print(f"Size: {h.size}")  # Should be 4
