@@ -155,6 +155,42 @@ class BST:
 
         return "\n".join(result)
 
+    def height(self):
+        height = self._dfs_recur(self.root)
+        bfs_height = self._bfs_recur(self.root)
+        print(f"=========BFS:{bfs_height}")
+        return height
+
+    def _dfs_recur(self, node: Node):
+        if not node:
+            return -1  # this is if calculating nodes/level it will be 0
+
+        left = self._dfs_recur(node.left)
+        right = self._dfs_recur(node.right)
+
+        return 1 + max(left, right)
+
+    def _bfs_recur(self, node: Node | None):
+        if not node:
+            return -1  # this is if calculating nodes/level it will be 0
+
+        level = -1  # this is if calculating nodes/level it will be 0
+
+        q = deque([node])
+
+        while q:
+            for _ in range(len(q)):
+                curr = q.popleft()
+                if curr.left:
+                    q.append(curr.left)
+
+                if curr.right:
+                    q.append(curr.right)
+
+            level += 1
+
+        return level
+
 
 bst = BST()
 print("Press the num key to end to BST, and press `q` to end the script")
@@ -171,16 +207,7 @@ while True:
     except ValueError:
         print("BOLA THA BAS num key enter karo.. Yah toh PHIR `q` dbao")
 
-print(bst)
-# preorder = []
-# bst.preorder(preorder, bst.root)
-# print("Preorder of BST: ", preorder)
-# bst._preorder_itr()
-# postorder = []
-# bst.postorder(postorder, bst.root)
-# print("Postorder of BST: ", postorder)
-# bst._postorder_itr()
-inorder = []
-bst.inorder(inorder, bst.root)
-print("Inorder of BST: ", inorder)
-bst._inorder_itr()
+res = []
+bst.preorder(res, bst.root)
+print(res)
+print(bst.height())
