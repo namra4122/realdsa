@@ -1,4 +1,7 @@
 def int2bin(n: int) -> str:
+    if n == 0:
+        return "0"
+
     res = ""
     nve = False
 
@@ -20,10 +23,12 @@ def int2bin(n: int) -> str:
                 rev_res += "0"
         res = rev_res
 
-    return res if not nve else "1" + res
+    return "0" + res if not nve else "1" + res
 
 
 print(int2bin(5))
 print(int2bin(-5))
+print(int2bin(6))
+print(int2bin(-6))
 print(int2bin(-125))
 print(int2bin(0))
