@@ -1,3 +1,5 @@
+
+
 import heapq
 import sys
 
@@ -5,7 +7,6 @@ import sys
 def paths(source: int, adjList: list) -> list:
     # Distance list
     distance = [sys.maxsize] * len(adjList)
-    visited = [0] * len(adjList)
     distance[source] = 0  # Make source distance zero
 
     # Priority queue
@@ -28,7 +29,7 @@ def paths(source: int, adjList: list) -> list:
     return distance
 
 
-def findPath(start: int, end: int, adjList: list) -> tuple[int, str]:
+def find_path(start: int, end: int, adjList: list) -> tuple[int, str]:
     dist = 0
     path = ""
 
