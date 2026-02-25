@@ -53,7 +53,7 @@ class Trie:
 
         return node == self.root
 
-    def search(self, data: str | int) -> bool:
+    def search(self, data: str | int) -> tuple[bool, int]:
         data = str(data)
         curr = self.root
 
@@ -62,7 +62,7 @@ class Trie:
                 return False  # word not in trie
             curr = curr.child[ch]
 
-        return curr.end_of_word > 0
+        return (curr.end_of_word > 0, curr.end_of_word)
 
     def update(self, values: tuple) -> bool:
         if self.delete(values[0]):
@@ -71,7 +71,28 @@ class Trie:
         return False
 
     def start_with(self, phrase: str | int) -> list[str]:
-        pass
+        phrase = str(phrase)
+        curr = self.root
+
+        for ch in phrase:
+            if ch not in curr.child.keys():
+                return []
+            curr = curr.child[ch]
+
+        # shop,shopping, shoe
+        # sho
+        res = []
+
+        def find(node, temp_str):
+            if node.end_of_word > 0:
+                res.append(temp_str)
+
+            for ch, ch_node in node.child.items():
+                find(ch_node, temp_str + ch)
+
+        find(curr, phrase)
+
+        return res
 
     def delete_all(self) -> None:
         self.root = Node()
@@ -92,52 +113,82 @@ class Trie:
         return result
 
 
+# testcases = [
+#     ("insert", "shop", None),
+#     ("insert", "shopping", None),
+#     ("insert", "show", None),
+#     ("insert", "showstoper", None),
+#     ("insert", "show", None),  # duplicate inser
+#     ("insert", "stop", None),
+#     ("insert", "hash", None),
+#     ("insert", "hash", None),  # duplicate inser)s
+#     ("insert", "air", None),
+#     ("insert", "airbone", None),
+#     ("insert", 412202, None),
+#     ("insert", 4122, None),
+#     ("insert", "（书、杂志等中区别于图片的）正文，文字材料", None),
+#     ("search", "（书、杂志等中区别于图片的）正文，文字材料", True),
+#     ("search", "sharp", False),
+#     ("search", "show", True),
+#     ("search", "airohub", False),
+#     ("search", "stopping", False),
+#     ("search", "shop", True),
+#     ("search", "shopping", True),
+#     ("search", "stoper", False),
+#     ("search", 41204, False),
+#     ("search", 412202, True),
+#     ("start_with", "sho", ["shop", "shopping", "show", "showstoper"]),
+#     ("start_with", "ai", ["air", "airbone"]),
+#     ("start_with", "ha", ["hash"]),
+#     ("start_with", 412, ['4122', '412202']),
+#     ("delete", "air", True),
+#     ("search", "air", False),
+#     ("delete", "airstrip", "Not Found"),
+#     ("delete", "（书、杂志等中区别于图片的）正文，文字材料", True),
+#     ("search", "（书、杂志等中区别于图片的）正文，文字材料", False),
+#     ("update", ("hash", "namra"), True),
+#     ("search", "namra", True),
+#     ("search", "hash", True),
+#     ("delete", 412202, True),
+#     ("search", 412202, False),
+#     ("delete", "showstoper", True),
+#     ("search", "showstoper", False),
+#     ("delete", "shop", True),
+#     ("search", "shop", False),
+#     ("update", (4122, 412202), True),
+#     ("search", 412202, True),
+#     ("update", ("show", "showstoper"), True),
+#     ("search", "showstoper", True),
+# ]
+
 testcases = [
-    ("insert", "shop", None),
-    ("insert", "shopping", None),
-    ("insert", "show", None),
-    ("insert", "showstoper", None),
-    ("insert", "show", None),  # duplicate inser
-    ("insert", "stop", None),
-    ("insert", "hash", None),
-    ("insert", "hash", None),  # duplicate inser)s
-    ("insert", "air", None),
-    ("insert", "airbone", None),
-    ("insert", 412202, None),
-    ("insert", 4122, None),
+    ("insert", "shoe", None),
+    ("insert", "search", None),
+    ("search", "search", True),
+    ("search", "shoe", True),
+    ("delete", "search", True),
+    ("search", "search", False),
+    ("insert", "road", None),
+    ("search", "road", True),
+    ("insert", "pineapple", None),
+    ("insert", "pine", None),
+    ("delete", "apple", "Not Found"),
+    ("delete", "pine", True),
+    ("update", ("pineapple", "pinetree"), True),
+    ("search", "pinetree", True),
+    ("insert", "", None),
     ("insert", "（书、杂志等中区别于图片的）正文，文字材料", None),
     ("search", "（书、杂志等中区别于图片的）正文，文字材料", True),
-    ("search", "sharp", False),
-    ("search", "show", True),
-    ("search", "airohub", False),
-    ("search", "stopping", False),
-    ("search", "shop", True),
-    ("search", "shopping", True),
-    ("search", "stoper", False),
-    ("search", 41204, False),
-    ("search", 412202, True),
-    # ("start_with", "sho", ["shop", "shopping", "show", "showstoper"]),
-    # ("start_with", "ai", ["air", "airbone"]),
-    # ("start_with", "ha", ["hash"]),
-    # ("start_with", 412, [412202, 4122]),
-    ("delete", "air", True),
-    ("search", "air", False),
-    ("delete", "airstrip", "Not Found"),
-    ("delete", "（书、杂志等中区别于图片的）正文，文字材料", True),
-    ("search", "（书、杂志等中区别于图片的）正文，文字材料", False),
-    ("update", ("hash", "namra"), True),
-    ("search", "namra", True),
-    ("search", "hash", True),
-    ("delete", 412202, True),
-    ("search", 412202, False),
-    ("delete", "showstoper", True),
-    ("search", "showstoper", False),
-    ("delete", "shop", True),
-    ("search", "shop", False),
-    ("update", (4122, 412202), True),
-    ("search", 412202, True),
-    ("update", ("show", "showstoper"), True),
-    ("search", "showstoper", True),
+    ("insert", "a-b", None),
+    ("insert", "a!", None),
+    ("insert", "a-", None),
+    ("insert", "showroom", None),
+    ("insert", "sabudana", None),
+    ("start_with", "s", ["shoe", "showroom", "sabudana"]),
+    ("search", "（书、杂志等中区别于图片的）正文，文字材料", True),
+    ("search", "a-b", True),
+    ("search", "a!", True),
+    ("search", "a-", True),
 ]
 
 
@@ -146,8 +197,8 @@ trie = Trie()
 
 def test_trie():
     for test_op_str, test_in, test_out in testcases:
-        print(f"Running Test: {test_op_str} -> {test_in} -> {test_out}")
         test_op = getattr(trie, test_op_str)
         testoutput = test_op(test_in)
         assert testoutput == test_out
+        print(f"Testcase Passed: {test_op_str} -> {test_in} -> {test_out}")
     print(json.dumps(trie.visualize()))
