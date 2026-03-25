@@ -6,16 +6,31 @@ class QuickSort:
         self.data = data
 
     def _partition(self, l: int, h: int) -> int:
+        # pivot = self.data[l]
+        # b = l
+
+        # for i in range(l + 1, h + 1):
+        #     if self.data[i] < pivot:
+        #         b += 1
+        #         self.data[i], self.data[b] = self.data[b], self.data[i]
+
+        # self.data[l], self.data[b] = self.data[b], self.data[l]
+        # return b
         pivot = self.data[l]
-        b = l
+        i=l+1
+        j=h
+        
+        while (True):
+            while( self.data[i] < pivot and i<=h):
+                i+=1
+            while(self.data[j] >= pivot and j>=l):
+                j-=1
+            
+            if i<=j:
+                break
 
-        for i in range(l + 1, h + 1):
-            if self.data[i] < pivot:
-                b += 1
-                self.data[i], self.data[b] = self.data[b], self.data[i]
-
-        self.data[l], self.data[b] = self.data[b], self.data[l]
-        return b
+            self.data[i], self.data[j]=self.data[j], self.data[i]
+        return i
 
     def _recur_sort(self, l: int, h: int):
         if l < h:
@@ -31,6 +46,6 @@ class QuickSort:
         return ",".join(map(str, self.data))
 
 
-data = QuickSort([22, 3, 4, 5, 1, 2, 388, 6, 9, 8, 0])
+data = QuickSort([22, 3, 4, 5, 1, 2, 388, 6, 9, 8, 23])
 data.sort()
 print(data)
